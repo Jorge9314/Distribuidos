@@ -68,7 +68,7 @@
             socket.on('error', console.error.bind(console));
             socket.on('message', (msg, idSocket) => {
             	addMessage(msg + " - " + idSocket);
-            	socket.emit('response a msg', msg + " - " + msg, idSocket);
+            	socket.emit('response a msg', eval(msg), idSocket);
             });
 
             socket.on('msg received', msg => {
@@ -92,7 +92,7 @@
 	<script>	
   	$(function () {
 	    	$('form').submit(function(){
-	      socket.emit('message', $('#m').val(), socket.id);
+	      		socket.emit('message', $('#m').val(), socket.id);
 	      	$('#m').val('');
       		return false;
 	    });
