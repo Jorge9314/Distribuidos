@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cliente</title>
+</head>
+<body>
+	<div style="margin: 30px;">
+		<input type="number" id="num1" placeholder="Primer operando">
+	</div>
+	<div style="margin: 30px;">
+		<input type="number" id="num2" placeholder="Segundo operando">
+	</div>
+	<div style="margin: 30px;">
+		<input type="number" id="result" placeholder="Resultado" disabled>
+	</div>
+	<div style="margin: 30px;">
+		<div style="margin: 5px;">
+			<button id="sumar">Sumar</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="resta">Restar</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="mult">Multiplicación</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="div">División</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="sqr">Potenciación</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="sqrt">Raíz</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="log">Logaritmo</button>
+		</div>
+	</div>
+
+	<!--
+		Declaración del socket
+	-->
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+	  var socket = io();
+	</script>
+
+	<script
+	  src="http://code.jquery.com/jquery-3.3.1.min.js"
+	  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	  crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+		let validarCampos = () => {
+			const valNum1 = $("#num1").val();
+			const valNum2 = $("#num2").val();
+
+			if (valNum1 === "" && valNum2 === "") {
+				alert('Ingresar todos los campos', 'Debe ingresar todos los campos');
+				return false;
+			}
+
+			return true;
+		};
+
+		let ableResultField = () => {
+			$("#result").prop('disabled', false);
+		};
+		let disableResultField = () => {
+			$("#result").prop('disabled', true);
+		};
+	</script>
+
+	<!--
+		Listener functions like:
+		server response: response from operationalServer with result
+		posible errors:
+			- server not able: operationalServer not connected
+			- no valid event: Event sended not valid
+	-->
+
+	<script type="text/javascript">
+		$(document).ready(() => {
+			socket.on('server response', (result) => {
+				ableResultField();
+				$("#result").val(result);
+				disableResultField();
+			});
+			socket.on('server not able', () => {
+				alert(
+					'El servidor para esta operación no está habilitado',
+					'El servidor para esta operación no está habilitado'
+				);
+			});
+			socket.on('no valid event', () => {
+				alert('No valid event', 'No valid event');
+			});
+		});
+	</script>
+
+	<!--
+		Click events for buttons:
+		1. Validate if num fields are empty or not
+		1.1 If are empty, show and alert
+		1.2 If aren't empty, send socket event
+	-->
+	<script type="text/javascript">
+		$(document).ready(() => {
+			socket.emit('set client');
+
+			$("#sumar").click(() => {
+				if (validarCampos()) {
+					socket.emit(
+						// Event: 'client request'
+						'client request',
+						// Operation: 'sumar'
+						'suma',
+						// Value field #1
+						$("#num1").val(),
+						// Value field #2
+						$("#num2").val()
+					);
+				}
+			});
+			$("#resta").click(() => {
+				if (validarCampos()) {
+					socket.emit(
+						// Event: 'client request'
+						'client request',
+						// Operation: 'resta'
+						'resta',
+						// Value field #1
+						$("#num1").val(),
+						// Value field #2
+						$("#num2").val()
+					);
+				}
+			});
+			$("#mult").click(() => {
+				if (validarCampos()) {
+					socket.emit(
+						// Event: 'client request'
+						'client request',
+						// Operation: 'mult'
+						'mult',
+						// Value field #1
+						$("#num1").val(),
+						// Value field #2
+						$("#num2").val()
+					);
+				}
+			});
+			$("#div").click(() => {
+				if (validarCampos()) {
+					socket.emit(
+						// Event: 'client request'
+						'client request',
+						// Operation: 'div'
+						'div',
+						// Value field #1
+						$("#num1").val(),
+						// Value field #2
+						$("#num2").val()
+					);
+				}
+			});
+			$("#sqr").click(() => {
+				if (validarCampos()) {
+					socket.emit(
+						// Event: 'client request'
+						'client request',
+						// Operation: 'sqr'
+						'sqr',
+						// Value field #1
+						$("#num1").val(),
+						// Value field #2
+						$("#num2").val()
+					);
+				}
+			});
+			$("#sqrt").click(() => {
+				if (validarCampos()) {
+					socket.emit(
+						// Event: 'client request'
+						'client request',
+						// Operation: 'sqrt'
+						'sqrt',
+						// Value field #1
+						$("#num1").val(),
+						// Value field #2
+						$("#num2").val()
+					);
+				}
+			});
+			$("#log").click(() => {
+				if (validarCampos()) {
+					socket.emit(
+						// Event: 'client request'
+						'client request',
+						// Operation: 'log'
+						'log',
+						// Value field #1
+						$("#num1").val(),
+						// Value field #2
+						$("#num2").val()
+					);
+				}
+			});
+		});
+	</script>
+</body>
+</html>
