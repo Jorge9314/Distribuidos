@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>operationalServer</title>
+	<script type="text/javascript">
+		// SET A INITIAL STATE operationalServerType
+		// Define the operation that server do
+		var operationalServerType = null;
+	</script>
+	<!--
+		Math.JS import
+	-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.20.2/math.js"></script>
+</head>
+<body>
+	<div style="margin: 30px;">
+		<div style="margin: 5px;">
+			<button id="suma">Suma</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="resta">Restar</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="mult">Multiplicación</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="div">División</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="sqr">Potenciación</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="sqrt">Raíz</button>
+		</div>
+
+		<div style="margin: 5px;">
+			<button id="log">Logaritmo</button>
+		</div>
+	</div>
+
+	<!--
+		Declaración del socket
+	-->
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+	  var socket = io();
+	</script>
+
+	<!--
+		jQuery import
+	-->
+	<script
+	  src="http://code.jquery.com/jquery-3.3.1.min.js"
+	  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	  crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+		let blockButtons = () => {
+			$("#"+operationalServerType).css('background-color', 'red');
+			$("#suma").prop('disabled', true);
+			$("#resta").prop('disabled', true);
+			$("#mult").prop('disabled', true);
+			$("#div").prop('disabled', true);
+			$("#sqr").prop('disabled', true);
+			$("#sqrt").prop('disabled', true);
+			$("#log").prop('disabled', true);
+		};
+	</script>
+
+	<!--
+		Listener functions like:
+		request: response from operationalServer with result
+		posible errors:
+			- server not able: operationalServer reserved
+			- no valid event: Event sended not valid
+	-->
+
+	<script type="text/javascript">
+		$(document).ready(() => {
+			console.log();
+			
+			socket.on('request', (num1, num2, socketClientID) => {
+				var result = 0;
+
+				console.log('**************************');
+				console.log(`Proccessing ${operationalServerType}`);
+				console.log(`num1: ${num1}`);
+				console.log(`num1: ${num2}`);
+
+				num1 = parseInt(num1);
+				num2 = parseInt(num2);
+
+				switch(operationalServerType) {
+					case 'suma':
+						result = num1 + num2;
+						break;
+					case 'resta':
+						result = num1 - num2;
+						break;
+					case 'mult':
+						result = num1 * num2;
+						break;
+					case 'div':
+						if (num2 !== 0) result = num1 / num2;
+						break;
+					case 'sqr':
+						result = math.pow(num1, num2);
+						break;
+					case 'sqrt':
+						result = math.pow(num1, 1/num2);
+						break;
+					case 'log':
+						result = math.log(num1, num2);;
+						break;
+				}
+
+				console.log(`result: ${result}`)
+				console.log('**************************');
+
+				socket.emit('operationalServer response', result, socketClientID);
+			});
+			socket.on('server reserved', () => {
+				alert(
+					'El servidor reservado',
+					'El servidor reservado'
+				);
+				blockButtons();
+			});
+			socket.on('server not able', () => {
+				alert(
+					'El servidor para esta operación ya se encuentra ocupado',
+					'El servidor para esta operación ya se encuentra ocupado'
+				);
+			});
+			socket.on('no valid event', () => {
+				alert('No valid event', 'No valid event');
+			});
+		});
+	</script>
+
+	<!--
+		Click events for buttons:
+		1. Send a setter operationServer
+		2. Wait response
+	-->
+	<script type="text/javascript">
+		$(document).ready(() => {
+			$("#suma").click(() => {
+				socket.emit('set server operation', 'suma');
+				operationalServerType = 'suma';
+			});
+			$("#resta").click(() => {
+				socket.emit('set server operation', 'resta');
+				operationalServerType = 'resta';
+			});
+			$("#mult").click(() => {
+				socket.emit('set server operation', 'mult');
+				operationalServerType = 'mult';
+			});
+			$("#div").click(() => {
+				socket.emit('set server operation', 'div');
+				operationalServerType = 'div';
+			});
+			$("#sqr").click(() => {
+				socket.emit('set server operation', 'sqr');
+				operationalServerType = 'sqr';
+			});
+			$("#sqrt").click(() => {
+				socket.emit('set server operation', 'sqrt');
+				operationalServerType = 'sqrt';
+			});
+			$("#log").click(() => {
+				socket.emit('set server operation', 'log');
+				operationalServerType = 'log';
+			});
+		});
+	</script>
+</body>
+</html>

@@ -31,7 +31,7 @@ io.on('connection', (socket) => {
   	switch (reservedOperation) {
 			case 'suma':
 				if (operationalServers.sumaServer === null) {
-					socket.emit('server not able');
+					socket.emit('server not able');	
 				} else {
 					operationalServers.sumaServer.emit('request', num1, num2, socket.id);
 				}
