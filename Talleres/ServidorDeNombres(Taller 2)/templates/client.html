@@ -5,10 +5,10 @@
 </head>
 <body>
 	<div style="margin: 30px;">
-		<input type="number" id="num1" placeholder="Primer operando">
+		<input type="number" id="num1" placeholder="Primer operando" disabled>
 	</div>
 	<div style="margin: 30px;">
-		<input type="number" id="num2" placeholder="Segundo operando">
+		<input type="number" id="num2" placeholder="Segundo operando" disabled>
 	</div>
 	<div style="margin: 30px;">
 		<input type="number" id="result" placeholder="Resultado" disabled>
@@ -75,6 +75,10 @@
 		let disableResultField = () => {
 			$("#result").prop('disabled', true);
 		};
+		let ableNumFields = () => {
+			$("#num1").prop('disabled', false);
+			$("#num2").prop('disabled', false);
+		};
 	</script>
 
 	<!--
@@ -113,7 +117,6 @@
 	<script type="text/javascript">
 		$(document).ready(() => {
 			socket.emit('set client');
-
 			$("#sumar").click(() => {
 				if (validarCampos()) {
 					socket.emit(
