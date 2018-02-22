@@ -1,49 +1,116 @@
-# coding=utf-8
-import sys
 import socket
-import random
-import time
-import struct
-import thread
 
-HOST = '127.0.0.1'
-RECV_BUFFER = 1024
-PORT = 9000
+class UDPClient:
+	
+	def __init__(self, ip, puerto):
+		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		self.serverMainAddr = (ip, puerto)
+		self.id = "-1"
+		self.tipo = "cliente"
+		self.sock.settimeout(60)
 
-def send_values(socket, num1, num2):
-    packet = struct.pack("hh", num1, num2)
-    socket.send(packet)
-    print("ingrese el primer numero")
-    num1 = int(input())
-    print("ingrese el segundo numero")
-    num2 = int(input())
-    time.sleep(5)
-    send_values(socket, num1, num2)
+	def sendMsg(self, message, addres):
+		if isinstance(message, str):
+			message = self.id + ":" + self.tipo + ":" + message + ":"
+			self.sock.sendto(message.encode('utf-8'), addres)
+			print("mensaje enviado - {}".format(message))
+		elif isinstance(message, bytes):
+			message = self.id + ":" + self.tipo + ":" + message.decode('utf-8') + ":"
+			self.sock.sendto(message, addres)
+			print("mensaje enviado - {}".format(message.decode('utf-8')))
+		else:
+			print("ERROR - Data type to send can't work")
+			return None
 
-def send_position(socket,x,y):
-    packet = struct.pack("hh", x, y)
-    socket.send(packet)
-    # print "My current position is: " + str(x) + "," + str(y) + "\n"
-    x += random.randint(-1,1)
-    y += random.randint(-1,1)
-    time.sleep(5)
-    send_position(socket,x,y)
+	def recieveMsg(self, size):
+		try:
+			data, addr = self.sock.recvfrom(size)
+			print("Mensaje recibido - {}".format(data.decode('utf-8')))
+			id = None
+			tipo = None
+			mensaje = None
+			temp = ""
+			for i in data.decode('utf-8'):
+				if(i!=":"):
+					temp+=i
+				elif(id is None and i==":"):
+					id=temp
+					temp=""
+				elif(tipo is None and i==":"):
+					tipo=temp
+					temp=""
+				elif(mensaje is None and i==":"):
+					mensaje=temp
+					temp=""
+			return (id, tipo, mensaje, addr)
+		
+		except socket.timeout:
+			print("Time over")
+			return (None, None, None, None)
 
+		except:
+			return (None, None, None, None)
 
-def client():
-    addr = (HOST, PORT)
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.settimeout(10)
-    client_socket.connect(addr)
-    
-    # Send starting position packet
-    # thread.start_new_thread(send_position, (client_socket,0,0))
-    thread.start_new_thread(send_values, (client_socket,0,0))
-    while 1:
+	def comServerName(self):
+		print("Communicating - Server name")
+		while True:
+			MESSAGE=input("> ")
+			self.sendMsg(MESSAGE, (ipServer, puertoServer))
+			data = ""
+			while data != "end" and data is not None:
+				id, tipo, data, addr=self.recieveMsg(1024)
+				if (data is not None):
+					print("Communique - Server name")
+					print("Recibido dato '{}' de '{}'".format(data, addr))
+					if(data!="end"):
+						if("~" in data):
+							tag = None
+							temp = ""
+							for i in data:
+								if(i != "~"):
+									temp += i
+								else:
+									tag = temp
+									temp = ""
+								if(tag == "direccion"):
+									ip, addr = temp[1:-1],split(", ")
+									ip = ip[1:-1]
+									addr = int(addr)
+									return (ip, addr)
 
-        # Read the local socket
-        data = client_socket.recv(RECV_BUFFER)
-        print data
+	def comServerOperation(self, addr):
+		print("Communicating - Server operation")
+		self.sendMsg("operar", addr)
+		id, tipo, data, addr=self.recieveMsg(1024)
+		data = None
+		while data != "end":
+			id, tipo, data, addr=self.recieveMsg(1024)
+		print("Communique - server operation")
+		print("To exit writte END")
+		while True:
+			MESSAGE = input("> ")
+			self.sendMsg(MESSAGE, addr)
+			data = ""
+			if MESSAGE == "END":
+				return None
+			while data != "end" and data is not None:
+				id, tipo, data, addr = self.recieveMsg(1024)
+				if (data is not None):
+					print("Recibido dato '{}' de '{}'".format(data, addr))
 
-if __name__ == "__main__":
-    sys.exit(client())
+	def runClient(self):
+		print("Client running")
+		while True:
+			addr = self.comServerName()
+			if(addr is not None):
+				print("dir", addr)
+				self.comServerOperation(addr)
+
+if __name__ == '__main__':
+	ipServer = input("input server IP: ")
+	puertoServer = int(input("input server port: "))
+	print("Server IP: ", ipServer)
+	print("Server Port: ", puertoServer)
+	cliente = UDPClient(ipServer, puertoServer)
+
+	cliente.runClient()
