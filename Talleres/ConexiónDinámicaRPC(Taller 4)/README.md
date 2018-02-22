@@ -2,7 +2,7 @@
 
 > conector: Guarda las interfaces de los servidores.
 
-Cuando un servidor comienza su ejecución, envía al conector: ** nombre, número de versión, único identificador, IP **
+Cuando un servidor comienza su ejecución, envía al conector: **nombre, número de versión, único identificador, IP**
 
 Crear un Conector, un Cliente y tres Servidores (Suma, resta y multiplicación)
 
