@@ -8,7 +8,7 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 
 class OperationServer():
     with SimpleXMLRPCServer(("localhost", 8001),
-                            requestHandler=RequestHandler, allow_none=True) as serverOp:
+                            requestHandler=RequestHandler) as serverOp:
 
         serverOp.register_introspection_functions()
         # Register pow() function; this will use the value of

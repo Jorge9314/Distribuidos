@@ -9,7 +9,7 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 # Create server - primary
 class PrimaryServer():   
     with SimpleXMLRPCServer(("localhost", 8000),
-                            requestHandler=RequestHandler) as server:
+                            requestHandler=RequestHandler, allow_none=True) as server:
         server.register_introspection_functions()
        
         def conection(op, x, y):
