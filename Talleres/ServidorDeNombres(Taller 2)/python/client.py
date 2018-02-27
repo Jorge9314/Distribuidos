@@ -3,8 +3,8 @@ import socket
 class UDPClient:
 	
 	def __init__(self, ip, puerto):
-		self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-		self.serverMainAddr = (ip, puerto)
+		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.serverMainAddr = (ip, pueSrto)
 		self.id = "-1"
 		self.tipo = "cliente"
 		self.sock.settimeout(60)
