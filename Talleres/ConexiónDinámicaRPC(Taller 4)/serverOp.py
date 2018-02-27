@@ -16,6 +16,7 @@ class OperationServerAdd():
 		serverOp.register_function(lambda x,y,z: x+y+z, 'addv2')
 		serverOp.register_function(lambda x,y,z,w: x+y+z+w, 'addv3')
 
+
 		# Run the server's main loop
 		serverOp.serve_forever()
 
