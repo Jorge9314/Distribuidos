@@ -3,6 +3,7 @@ TCP_PORT = 5005
 import socket
 import math
 import time
+import glob, os 
 
 TCP_IP = '127.0.0.1'
 BUFFER_SIZE = 1024
@@ -13,13 +14,11 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((TCP_IP, TCP_PORT))
 s.listen(1)
 
-listFiles = [
-    '1.txt',
-    '2.txt',
-    '3.txt'
-]
+listFiles = []
 
 def getStrListFiles():
+    for file in glob.glob("*.txt"):
+        listFiles.append(file)
     tempStr = ''
     for fileName in listFiles:
         tempStr += fileName + ","
