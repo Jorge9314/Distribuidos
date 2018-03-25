@@ -1,5 +1,5 @@
 // PORT Host app
-const PORT = 8009;
+const PORT = 8010;
 
 // Require libraries
 // Require Express.js
@@ -26,8 +26,10 @@ var io = require('socket.io')(http, {pingTimeout: 30000});
 // Initialization date Server
 var date = new Date();
 
+// Initialization client's counter
 var numClients = 0;
 
+// Initialization dates to send clients
 var dates = [];
 
 // On io detect a socket connection
@@ -35,24 +37,35 @@ io.on('connection', (socket) => {
 
   // Print ID Socket connected
   console.log(`socket ${socket.id} connected`);
+  // Update 1 numClients counter
   numClients += 1;
 
+  // When a client goes
   socket.on('disconnect', () => {
+    // Reduce 1 numClients counter
     numClients -= 1;
   })
 
-  // Send first date from server
+  // Client send a date
   socket.on('take date', date => {
+    // Add date to dates
+    // @param date -> String
+    // @function -> Convert date(String) to date(Object Date)
     dates.push(new Date(date));
 
+    // If all clients send their date
     if (dates.length === numClients) {
+      // Process dates
       processDate();
     }
   });
 });
 
+// @function -> Get a mean date
 let processDate = () => {
   date = new Date;
+
+  // Get means
   date.setDate(meanDays(dates));
   date.setFullYear(meanYear(dates));
   date.setHours(meanHours(dates));
@@ -60,7 +73,10 @@ let processDate = () => {
   date.setMonth(meanMonths(dates));
   date.setSeconds(meanSeconds(dates));
 
+  // Send new date to all clients
   io.sockets.emit('update date', date);
+
+  // Reset old dates
   dates = [];
 };
 
