@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div id="hourText">
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+    </script>
+
+    <script type="text/javascript">
+      var dateClient;
+
+      socket.on('sendme date', () => {
+        dateClient = new Date();
+        socket.emit('take date', dateClient);
+
+        $("#hourText").append(
+          `<div>
+            <p>Server want date</p>
+          </div>`
+        );
+      });
+
+      socket.on('update date', date => {
+        dateClient = date;
+
+        $("#hourText").append(
+          `<div>
+            <p>Date updated from server</p>
+            <p>${date}</p>
+          </div>`
+        );
+      })
+    </script>
+  </body>
+</html>

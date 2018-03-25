@@ -1,0 +1,15 @@
+{
+  "name": "algoritomo_cristian",
+  "version": "1.0.0",
+  "description": "Taller 7 - Sistemas Distribuidos",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jorge Mario Gil - Luis David Ocampo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "socket.io": "^2.0.4"
+  }
+}
