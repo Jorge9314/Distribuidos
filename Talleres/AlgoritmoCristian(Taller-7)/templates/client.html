@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div id="hourText">
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+    </script>
+
+    <script type="text/javascript">
+      function getDateFromServer() {
+        $("#hourText").append(
+          `<div>
+            <p>Get date request</p>
+          </div>`
+        );
+        socket.emit('get date');
+      }
+    </script>
+
+    <script type="text/javascript">
+      var dateClient;
+
+      socket.on('date', date => {
+        dateClient = date;
+
+        $("#hourText").append(
+          `<div>
+            <p>Date received</p>
+            <p>${date}</p>
+          </div>`
+        );
+      });
+
+      socket.on('update date', date => {
+        dateClient = date;
+
+        $("#hourText").append(
+          `<div>
+            <p>Date updated from server</p>
+            <p>${date}</p>
+          </div>`
+        );
+      })
+
+      setInterval(getDateFromServer, 3000);
+    </script>
+  </body>
+</html>
