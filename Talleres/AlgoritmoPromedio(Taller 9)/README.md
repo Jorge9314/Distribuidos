@@ -1,4 +1,4 @@
-Algoritmo con promedio
+# Algoritmo con promedio Taller #9
 
 * El tiempo se divide en intervalos
 * Cuando inicia un intervalo, cada máquina envia su hora al resto
