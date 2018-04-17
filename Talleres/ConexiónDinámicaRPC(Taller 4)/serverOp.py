@@ -29,6 +29,7 @@ class OperationServerSub():
 		serverOp.register_function(lambda w,x,y,z: w-x-y-z, 'subv3')
 		# Run the server's main loop
 		serverOp.serve_forever()
+
 class OperationServerMul():
 	def __init__(self):
 		serverOp=SimpleXMLRPCServer(("localhost", 8001), requestHandler=RequestHandler)
